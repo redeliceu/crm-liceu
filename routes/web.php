@@ -4,6 +4,7 @@ use App\Http\Controllers\AnaliticsController;
 use App\Http\Controllers\Api\CrmController;
 use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\TemplatesController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -56,6 +57,10 @@ Route::delete('templates/{id}', [TemplatesController::class, 'destroy'])
 Route::get('templates/list', [TemplatesController::class, 'list'])
     ->middleware(['auth', 'verified'])
     ->name('list');
+
+Route::get('users/list', [UserController::class, 'list'])
+    ->middleware(['auth', 'verified'])
+    ->name('user.list');
 
 
 require __DIR__.'/settings.php';

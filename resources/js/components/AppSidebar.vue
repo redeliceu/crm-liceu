@@ -14,8 +14,9 @@ import {
 import { dashboard, excel, statistics, template, list, analitics} from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
+import { DollarSign, Folder, Headset, LayoutGrid, User } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
+import user from '@/routes/user';
 
 
 const mainNavItems: NavItem[] = [
@@ -27,12 +28,18 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Gastos Sellflux',
         href: excel(),
-        icon: LayoutGrid,
+        icon: DollarSign,
     },
     {
         title: 'Estatísticas Atendimentos',
         href: statistics(),
-        icon: LayoutGrid,
+        icon: Headset,
+    },
+
+    {
+        title: 'Usúarios',
+        href: user.list(),
+        icon: User,
     },
 
     {

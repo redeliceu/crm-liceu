@@ -22,14 +22,17 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]); */
 
+        // Criar a escola primeiro
+        $school = School::firstOrCreate(['name' => 'Colégio Itaqua']);
+
         Template::create([
-            'school_id' => School::firstWhere('name', 'Colégio Itaqua')->id,
+            'school_id' => $school->id,
             'name' => 'lembete_v10',
             'number' => '1723393465022698',
         ]);
 
         Template::create([
-            'school_id' => School::firstWhere('name', 'Colégio Itaqua')->id,
+            'school_id' => $school->id,
             'name' => 'colegio_itaqua_mensalidade_em_aberto_20250808',
             'number' => '2168545506964928',
         ]);

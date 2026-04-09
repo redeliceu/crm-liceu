@@ -33,7 +33,6 @@
     },
     "dependencies": {
         "@inertiajs/vue3": "^2.1.0",
-        "@tanstack/react-table": "^8.21.3",
         "@tanstack/vue-table": "^8.21.3",
         "@vueuse/core": "^12.8.2",
         "axios": "^1.12.2",

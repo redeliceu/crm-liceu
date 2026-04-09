@@ -19,6 +19,8 @@ Route::post('/statistics/upload', [StatisticsController ::class, 'store']);
 
 Route::get('/statistics/data', [StatisticsController ::class, 'data']);
 
+Route::get('/users', [\App\Http\Controllers\Api\UserApiController::class, 'getUsers']);
+
 Route::get('/test-broadcast', function () {
     broadcast(new \App\Events\TestEvent());
     return 'Evento enviado!';
