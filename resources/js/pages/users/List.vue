@@ -8,14 +8,12 @@ import axios from 'axios';
 import {
     Table,
     TableBody,
-    //TableCaption,
     TableCell,
-    //TableFooter,
     TableHead,
     TableHeader,
     TableRow,
 } from '@/components/ui/table'
-import { CrownIcon, KeyRoundIcon, ShieldPlusIcon, StarIcon, Trash2Icon, UserRoundPlusIcon } from 'lucide-vue-next';
+import { ShieldPlusIcon, StarIcon, Trash2Icon, UserRoundPlusIcon } from 'lucide-vue-next';
 import Register from '../auth/Register.vue';
 
 type usersType = {
@@ -127,7 +125,7 @@ onMounted(() => {
                             <button class="cursor-pointer" title="excluir usuário">
                                 <Trash2Icon color="red" size="20px" />
                             </button>
-                            <button class="cursor-pointer" title="tornar adm" v-on:click="handleAdminDialog(user)">
+                            <button class="cursor-pointer" title="tornar adm" v-on:click="handleAdminDialog(user)" v-if="user.user_flag_id !== 2">
                                 <ShieldPlusIcon color="green" size="20px" />
                             </button>
                         </TableCell>

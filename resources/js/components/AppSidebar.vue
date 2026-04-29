@@ -37,14 +37,14 @@ const mainNavItems: NavItem[] = [
     },
 
     {
-        title: 'Usúarios',
+        title: 'Usuários',
         href: user.list(),
         icon: User,
     },
-
     {
         title: 'Template',
         icon: Folder,
+        href: '#',
         children: [
             {
                 title: 'Templates',
