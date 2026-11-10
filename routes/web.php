@@ -17,11 +17,6 @@ Route::get('dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 
-Route::get('/test-broadcast', function () {
-    broadcast(new \App\Events\TestEvent());
-    return 'Evento enviado!';
-});
-
 Route::get('excel', [CrmController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('excel');

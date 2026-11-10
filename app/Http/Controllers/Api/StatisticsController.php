@@ -10,6 +10,9 @@ use App\Models\PricingSellflux;
 use App\Models\StatisticService;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Inertia\Response;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +20,18 @@ use Inertia\Inertia;
 
 class StatisticsController extends Controller
 {
+    // Mesmas opções do <select> em resources/js/pages/ImportStatistics.vue
+    private const SCHOOLS = [
+        'Liceu Itaqua',
+        'Liceu Suzano',
+        'Liceu Aruja',
+        'Colégio Estação Futura',
+        'Colégio Itaqua',
+        'Colégio Doremi',
+        'Fisk Itaqua',
+        'Fisk Suzano',
+    ];
+
     public function index(): Response
     {
         // return Inertia::render('ImportExcel');
@@ -26,13 +41,30 @@ class StatisticsController extends Controller
 
     public function store(Request $request)
     {
-        $uploadedFile = $request->file('file');
-        $filename = time() . '_' . $uploadedFile->getClientOriginalName();
+        $validated = $request->validate([
+            // extensions: extensão informada pelo cliente; mimes: conteúdo real do arquivo
+            // (CSV costuma ser detectado como text/plain, por isso 'txt' em mimes)
+            'file' => ['required', 'file', 'max:20480', 'extensions:xlsx,xls,csv', 'mimes:xlsx,xls,csv,txt'],
+            'school' => ['required', 'string', Rule::in(self::SCHOOLS)],
+        ]);
 
-        // Salva no disco local (storage/app/imports)
+        $uploadedFile = $validated['file'];
+
+        // Nome gerado pelo servidor; nunca usar o nome enviado pelo cliente
+        $filename = Str::uuid() . '.' . strtolower($uploadedFile->getClientOriginalExtension());
+
+        // Salva no disco local (storage/app/private/imports)
         $path = $uploadedFile->storeAs('imports', $filename);
 
-        Excel::import(new StatisticServiceImport($path, $request->school), $path);
+        Log::info('Upload de estatísticas', [
+            'user_id' => $request->user()?->id,
+            'school' => $validated['school'],
+            'original_name' => $uploadedFile->getClientOriginalName(),
+            'stored_as' => $path,
+            'ip' => $request->ip(),
+        ]);
+
+        Excel::import(new StatisticServiceImport($path, $validated['school']), $path);
 
         // Dispara o job
         //ImportExcelJob::dispatch($path);
