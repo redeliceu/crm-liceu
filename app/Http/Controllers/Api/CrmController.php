@@ -8,6 +8,8 @@ use App\Imports\ExcelImport;
 use App\Jobs\ImportExcelJob;
 use App\Models\PricingSellflux;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use Maatwebsite\Excel\Facades\Excel;
@@ -25,11 +27,26 @@ class CrmController extends Controller
 
     public function store(Request $request)
     {
-        $uploadedFile = $request->file('file');
-        $filename = time() . '_' . $uploadedFile->getClientOriginalName();
+        $validated = $request->validate([
+            // extensions: extensão informada pelo cliente; mimes: conteúdo real do arquivo
+            // (CSV costuma ser detectado como text/plain, por isso 'txt' em mimes)
+            'file' => ['required', 'file', 'max:20480', 'extensions:xlsx,xls,csv', 'mimes:xlsx,xls,csv,txt'],
+        ]);
 
-        // Salva no disco local (storage/app/imports)
+        $uploadedFile = $validated['file'];
+
+        // Nome gerado pelo servidor; nunca usar o nome enviado pelo cliente
+        $filename = Str::uuid() . '.' . strtolower($uploadedFile->getClientOriginalExtension());
+
+        // Salva no disco local (storage/app/private/imports)
         $path = $uploadedFile->storeAs('imports', $filename);
+
+        Log::info('Upload de pricing CRM', [
+            'user_id' => $request->user()?->id,
+            'original_name' => $uploadedFile->getClientOriginalName(),
+            'stored_as' => $path,
+            'ip' => $request->ip(),
+        ]);
 
         Excel::import(new ExcelImport($path), $path);
 
